@@ -1,0 +1,8 @@
+
+[Desktop Entry]
+Name=Slic3r
+Exec=slic3r
+Icon=/usr/share/pixmaps/slic3r.ico
+Terminal=false
+Type=Application
+Categories=Graphics;

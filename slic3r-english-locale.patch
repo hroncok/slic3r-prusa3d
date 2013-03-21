@@ -1,0 +1,35 @@
+Upstream constantly refuses to support Perl >= 5.16.
+They say it handles locales incorrectly, but it might be caused by bad code
+design. Running Slic3r with locales using other char than point as a decimal
+separator causes crashes. This patch removes the warning about unsupported
+Perl version (it is very annoying) and forces Slic3r to use English decimal
+separator by setting the LC_NUMERIC environment variable. Setting it in more
+Perl way doesn't work and is overwritten in some of imported modules.
+https://github.com/alexrj/Slic3r/issues/935
+https://github.com/alexrj/Slic3r/pull/936#issuecomment-12544383
+https://github.com/alexrj/Slic3r/issues/538#issuecomment-14560494
+
+diff -ru a/lib/Slic3r.pm b/lib/Slic3r.pm
+--- a/lib/Slic3r.pm	2013-01-22 00:15:56.797243399 +0100
++++ b/lib/Slic3r.pm	2013-01-22 00:29:55.519336602 +0100
+@@ -21,9 +21,6 @@
+     $have_threads = $Config{useithreads} && eval "use threads; use Thread::Queue; 1";
+ }
+ 
+-warn "Running Slic3r under Perl >= 5.16 is not supported nor recommended\n"
+-    if $^V >= v5.16;
+-
+ our $var = "/usr/share/slic3r";
+ 
+ use Encode;
+diff -ru a/slic3r.pl b/slic3r.pl
+--- a/slic3r.pl	2013-01-17 15:50:45.000000000 +0100
++++ b/slic3r.pl	2013-01-22 00:30:19.327252847 +0100
+@@ -10,6 +10,7 @@
+ 
+ use Getopt::Long qw(:config no_auto_abbrev);
+ use List::Util qw(first);
++$ENV{LC_NUMERIC} = 'en_US.UTF-8';
+ use Slic3r;
+ $|++;
+ 

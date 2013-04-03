@@ -1,12 +1,12 @@
 Name:           slic3r
-Version:        0.9.8
-Release:        4%{?dist}
+Version:        0.9.9
+Release:        1%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
 # Images are CC-BY, code is AGPLv3
 Group:          Applications/Engineering
 URL:            http://slic3r.org/
-%global commit 71052433de0ff1f3da04471ccbb572babafc3cae
+%global commit 01e86c26159c5ff0570613831b82f638daf74450
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 Source0:        https://github.com/alexrj/Slic3r/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
@@ -19,31 +19,32 @@ Patch1:         %{name}-english-locale.patch
 
 Source1:        %{name}.desktop
 BuildArch:      noarch
-BuildRequires:  perl(Module::Build)
-BuildRequires:  perl(List::Util)
-BuildRequires:  perl(Test::More)
-BuildRequires:  perl(Math::Clipper) >= 1.17
-BuildRequires:  perl(Moo) >= 0.091009
+BuildRequires:  perl(Boost::Geometry::Utils) >= 0.06
+BuildRequires:  perl(Class::XSAccessor)
 BuildRequires:  perl(File::Spec)
-BuildRequires:  perl(Math::ConvexHull) >= 1.0.4
+BuildRequires:  perl(Growl::GNTP)
+BuildRequires:  perl(IO::Scalar)
+BuildRequires:  perl(List::Util)
+BuildRequires:  perl(Math::Clipper) >= 1.17
 BuildRequires:  perl(Math::ConvexHull::MonotoneChain)
-BuildRequires:  perl(XML::SAX)
-BuildRequires:  perl(XML::SAX::ExpatXS)
+BuildRequires:  perl(Math::ConvexHull) >= 1.0.4
+BuildRequires:  perl(Math::Geometry::Voronoi)
 BuildRequires:  perl(Math::PlanePath)
+BuildRequires:  perl(Module::Build)
+BuildRequires:  perl(Moo) >= 0.091009
+BuildRequires:  perl(Net::DBus)
+BuildRequires:  perl(parent)
 BuildRequires:  perl(Scalar::Util)
 BuildRequires:  perl(SVG)
-BuildRequires:  perl(parent)
+BuildRequires:  perl(Test::More)
 BuildRequires:  perl(Wx)
-BuildRequires:  perl(Boost::Geometry::Utils)
-BuildRequires:  perl(Math::Geometry::Voronoi)
-BuildRequires:  perl(Growl::GNTP)
-BuildRequires:  perl(Net::DBus)
-BuildRequires:  perl(IO::Scalar)
+BuildRequires:  perl(XML::SAX)
+BuildRequires:  perl(XML::SAX::ExpatXS)
 BuildRequires:  desktop-file-utils
-Requires:       perl(XML::SAX)
+Requires:       perl(Class::XSAccessor)
 Requires:       perl(Growl::GNTP)
 Requires:       perl(Net::DBus)
-Requires:       perl(Math::Clipper) >= 1.17
+Requires:       perl(XML::SAX)
 Requires:       perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
 
 %if 0%{?fedora} < 18
@@ -94,6 +95,12 @@ desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE1}
 %{_mandir}/man3/*
 
 %changelog
+* Wed Apr 03 2013 Miro Hrončok <mhroncok@redhat.com> - 0.9.9-1
+- New upstream release
+- Added version to perl(Boost::Geometry::Utils) BR
+- Sort (B)Rs alphabetically   
+- Added (B)R perl(Class::XSAccessor)
+
 * Wed Mar 20 2013 Miro Hrončok <mhroncok@redhat.com> - 0.9.8-4
 - Comments added about patches
 

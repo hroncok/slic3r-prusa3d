@@ -1,6 +1,6 @@
 Name:           slic3r
 Version:        0.9.9
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
 # Images are CC-BY, code is AGPLv3
@@ -19,6 +19,7 @@ Patch1:         %{name}-english-locale.patch
 
 # https://github.com/alexrj/Slic3r/issues/1077
 Patch2:         %{name}-config-wizard-crash-fix.patch
+Patch3:         %{name}-config-wizard-crash-fix2.patch
 
 Source1:        %{name}.desktop
 BuildArch:      noarch
@@ -67,6 +68,7 @@ for more information.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 perl Build.PL installdirs=vendor optimize="$RPM_OPT_FLAGS"
@@ -99,6 +101,9 @@ desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE1}
 %{_mandir}/man3/*
 
 %changelog
+* Tue Apr 23 2013 Miro Hrončok <mhroncok@redhat.com> - 0.9.9-3
+- Added second patch to fix upstream issue 1077
+
 * Tue Apr 23 2013 Miro Hrončok <mhroncok@redhat.com> - 0.9.9-2
 - Added patch to fix upstream issue 1077
 

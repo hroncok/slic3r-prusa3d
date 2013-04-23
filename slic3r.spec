@@ -28,6 +28,7 @@ Source1:        %{name}.desktop
 BuildArch:      noarch
 BuildRequires:  perl(Boost::Geometry::Utils) >= 0.06
 BuildRequires:  perl(Class::XSAccessor)
+BuildRequires:  perl(Encode::Locale)
 BuildRequires:  perl(File::Spec)
 BuildRequires:  perl(Growl::GNTP)
 BuildRequires:  perl(IO::Scalar)

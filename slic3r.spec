@@ -1,6 +1,6 @@
 Name:           slic3r
 Version:        0.9.9
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
 # Images are CC-BY, code is AGPLv3
@@ -104,6 +104,9 @@ desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE1}
 %{_mandir}/man3/*
 
 %changelog
+* Tue Apr 23 2013 Miro Hrončok <mhroncok@redhat.com> - 0.9.9-5
+- Added BR perl(Encode::Locale)
+
 * Tue Apr 23 2013 Miro Hrončok <mhroncok@redhat.com> - 0.9.9-4
 - Removed (optional) Net::DBus usage, that causes crashes
 

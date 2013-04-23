@@ -1,3 +1,15 @@
+diff --git a/Build.PL b/Build.PL
+index b8921a8..70d542c 100644
+--- a/Build.PL
++++ b/Build.PL
+@@ -28,7 +28,6 @@ my $build = Module::Build->new(
+     recommends     => {
+         'Class::XSAccessor' => '0',
+         'Growl::GNTP' => '0.15',
+-        'Net::DBus'   => '0',
+         'XML::SAX::ExpatXS' => '0',
+         'Wx'          => '0.9901',
+     },
 diff --git a/lib/Slic3r/GUI.pm b/lib/Slic3r/GUI.pm
 index ceb6adb..48dd662 100644
 --- a/lib/Slic3r/GUI.pm

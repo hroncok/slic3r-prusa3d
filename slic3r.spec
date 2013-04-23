@@ -39,7 +39,6 @@ BuildRequires:  perl(Math::Geometry::Voronoi)
 BuildRequires:  perl(Math::PlanePath)
 BuildRequires:  perl(Module::Build)
 BuildRequires:  perl(Moo) >= 0.091009
-BuildRequires:  perl(Net::DBus)
 BuildRequires:  perl(parent)
 BuildRequires:  perl(Scalar::Util)
 BuildRequires:  perl(SVG)
@@ -50,7 +49,6 @@ BuildRequires:  perl(XML::SAX::ExpatXS)
 BuildRequires:  desktop-file-utils
 Requires:       perl(Class::XSAccessor)
 Requires:       perl(Growl::GNTP)
-Requires:       perl(Net::DBus)
 Requires:       perl(XML::SAX)
 Requires:       perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
 

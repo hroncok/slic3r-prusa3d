@@ -1,12 +1,12 @@
 Name:           slic3r
-Version:        0.9.9
-Release:        5%{?dist}
+Version:        0.9.10b
+Release:        1%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
 # Images are CC-BY, code is AGPLv3
 Group:          Applications/Engineering
 URL:            http://slic3r.org/
-%global commit 01e86c26159c5ff0570613831b82f638daf74450
+%global commit f13c611f95059a2530bd30fc3c83362c2d95bf7e
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 Source0:        https://github.com/alexrj/Slic3r/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
@@ -17,23 +17,16 @@ Patch0:         %{name}-datadir.patch
 # Reasons are a bit complicated and are described in the patch
 Patch1:         %{name}-english-locale.patch
 
-# https://github.com/alexrj/Slic3r/issues/1077
-Patch2:         %{name}-config-wizard-crash-fix.patch
-Patch3:         %{name}-config-wizard-crash-fix2.patch
-
-# Removed (optional) Net::DBus usage, that causes crashes
-Patch4:         %{name}-remove-net-dbus.patch
-
 Source1:        %{name}.desktop
 BuildArch:      noarch
-BuildRequires:  perl(Boost::Geometry::Utils) >= 0.06
+BuildRequires:  perl(Boost::Geometry::Utils) >= 0.12
 BuildRequires:  perl(Class::XSAccessor)
 BuildRequires:  perl(Encode::Locale)
 BuildRequires:  perl(File::Spec)
 BuildRequires:  perl(Growl::GNTP)
 BuildRequires:  perl(IO::Scalar)
 BuildRequires:  perl(List::Util)
-BuildRequires:  perl(Math::Clipper) >= 1.17
+BuildRequires:  perl(Math::Clipper) >= 1.22
 BuildRequires:  perl(Math::ConvexHull::MonotoneChain)
 BuildRequires:  perl(Math::ConvexHull) >= 1.0.4
 BuildRequires:  perl(Math::Geometry::Voronoi)
@@ -69,9 +62,6 @@ for more information.
 %setup -qn Slic3r-%{commit}
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
 
 %build
 perl Build.PL installdirs=vendor optimize="$RPM_OPT_FLAGS"
@@ -104,6 +94,10 @@ desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE1}
 %{_mandir}/man3/*
 
 %changelog
+* Mon Jun 24 2013 Miro Hrončok <mhroncok@redhat.com> - 0.9.10b-1
+- New upstream release
+- Removed some already merged patches
+
 * Tue Apr 23 2013 Miro Hrončok <mhroncok@redhat.com> - 0.9.9-5
 - Added BR perl(Encode::Locale)
 

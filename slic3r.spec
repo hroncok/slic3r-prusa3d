@@ -6,7 +6,7 @@ License:        AGPLv3 and CC-BY
 # Images are CC-BY, code is AGPLv3
 Group:          Applications/Engineering
 URL:            http://slic3r.org/
-%global commit f13c611f95059a2530bd30fc3c83362c2d95bf7e
+%global commit d0eac88ff9586b17dcc1766874f69dbd7e8c534f
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 Source0:        https://github.com/alexrj/Slic3r/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 

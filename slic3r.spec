@@ -1,6 +1,6 @@
 Name:           slic3r
 Version:        0.9.10b
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
 # Images are CC-BY, code is AGPLv3
@@ -49,8 +49,11 @@ Requires:       perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
 %if 0%{?fedora} < 18
 # This is provided by XML::SAX (but not stated there)
 %filter_from_requires /perl(XML::SAX::PurePerl)/d
-%filter_setup
 %endif
+
+# Not actually needed
+%filter_from_requires /perl(Wx::GLCanvas)/d
+%filter_setup
 
 %description
 Slic3r is a G-code generator for 3D printers. It's compatible with RepRaps,
@@ -94,6 +97,9 @@ desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE1}
 %{_mandir}/man3/*
 
 %changelog
+* Tue Jun 25 2013 Miro Hrončok <mhroncok@redhat.com> - 0.9.10b-2
+- Filter perl(Wx::GLCanvas) from requires, it's optional and not yet in Fedora
+
 * Mon Jun 24 2013 Miro Hrončok <mhroncok@redhat.com> - 0.9.10b-1
 - New upstream release
 - Removed some already merged patches

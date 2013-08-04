@@ -1,6 +1,6 @@
 Name:           slic3r
 Version:        0.9.10b
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
 # Images are CC-BY, code is AGPLv3
@@ -97,6 +97,9 @@ desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE1}
 %{_mandir}/man3/*
 
 %changelog
+* Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.9.10b-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Tue Jun 25 2013 Miro Hrončok <mhroncok@redhat.com> - 0.9.10b-2
 - Filter perl(Wx::GLCanvas) from requires, it's optional and not yet in Fedora
 

@@ -1,12 +1,12 @@
 Name:           slic3r
 Version:        0.9.10b
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
 # Images are CC-BY, code is AGPLv3
 Group:          Applications/Engineering
 URL:            http://slic3r.org/
-%global commit d0eac88ff9586b17dcc1766874f69dbd7e8c534f
+%global commit  d0eac88ff9586b17dcc1766874f69dbd7e8c534f
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 Source0:        https://github.com/alexrj/Slic3r/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
@@ -16,6 +16,9 @@ Patch0:         %{name}-datadir.patch
 # Use English decimal separator for numbers
 # Reasons are a bit complicated and are described in the patch
 Patch1:         %{name}-english-locale.patch
+
+# Fix crash when loading a config file
+Patch2:         %{name}-load-config-fix.patch
 
 Source1:        %{name}.desktop
 BuildArch:      noarch
@@ -46,15 +49,6 @@ Requires:       perl(Growl::GNTP)
 Requires:       perl(XML::SAX)
 Requires:       perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
 
-%if 0%{?fedora} < 18
-# This is provided by XML::SAX (but not stated there)
-%filter_from_requires /perl(XML::SAX::PurePerl)/d
-%endif
-
-# Not actually needed
-%filter_from_requires /perl(Wx::GLCanvas)/d
-%filter_setup
-
 %description
 Slic3r is a G-code generator for 3D printers. It's compatible with RepRaps,
 Makerbots, Ultimakers and many more machines.
@@ -65,9 +59,10 @@ for more information.
 %setup -qn Slic3r-%{commit}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
-perl Build.PL installdirs=vendor optimize="$RPM_OPT_FLAGS"
+SLIC3R_NO_AUTO=1 perl Build.PL installdirs=vendor optimize="$RPM_OPT_FLAGS"
 ./Build
 
 %install
@@ -88,7 +83,7 @@ desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE1}
 ./Build test
 
 %files
-%doc MANIFEST README.markdown
+%doc README.markdown
 %{_bindir}/%{name}
 %{perl_vendorlib}/Slic3r*
 %{_datadir}/pixmaps/%{name}.ico
@@ -97,6 +92,11 @@ desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE1}
 %{_mandir}/man3/*
 
 %changelog
+* Fri Oct 18 2013 Miro Hrončok <mhroncok@redhat.com> - 0.9.10b-4
+- Remove all filtering from provides, it is not needed anymore
+- Don't add MANIFEST to %%doc
+- Fix crash when loading config (#1020802)
+
 * Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.9.10b-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 

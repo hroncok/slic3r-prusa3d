@@ -21,7 +21,7 @@ Patch1:         %{name}-english-locale.patch
 Patch2:         %{name}-load-config-fix.patch
 
 # Perl 5.18 compatibility
-Patch2:         %{name}-perl518.patch
+Patch3:         %{name}-perl518.patch
 
 Source1:        %{name}.desktop
 BuildArch:      noarch

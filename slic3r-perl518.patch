@@ -1,0 +1,72 @@
+From 43814e99f6c8bfc1a2d8cc0eae4a44d01a08b2af Mon Sep 17 00:00:00 2001
+From: Alessandro Ranellucci <aar@cpan.org>
+Date: Thu, 6 Jun 2013 10:46:58 +0200
+Subject: [PATCH] Remove smart match and lexical $_ for compatibility with perl
+ 5.18. #1216
+
+---
+ lib/Slic3r/Config.pm     | 4 ++--
+ lib/Slic3r/Format/OBJ.pm | 2 +-
+ lib/Slic3r/Format/STL.pm | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/lib/Slic3r/Config.pm b/lib/Slic3r/Config.pm
+index 22edd0f..8b9fb1c 100644
+--- a/lib/Slic3r/Config.pm
++++ b/lib/Slic3r/Config.pm
+@@ -1141,7 +1141,7 @@ sub set {
+     my ($opt_key, $value, $deserialize) = @_;
+     
+     # handle legacy options
+-    return if $opt_key ~~ @Ignore;
++    return if first { $_ eq $opt_key } @Ignore;
+     if ($opt_key =~ /^(extrusion_width|bottom_layer_speed|first_layer_height)_ratio$/) {
+         $opt_key = $1;
+         $opt_key =~ s/^bottom_layer_speed$/first_layer_speed/;
+@@ -1413,7 +1413,7 @@ sub read_ini {
+     
+     my $ini = { _ => {} };
+     my $category = '_';
+-    while (my $_ = <$fh>) {
++    while (<$fh>) {
+         s/\R+$//;
+         next if /^\s+/;
+         next if /^$/;
+diff --git a/lib/Slic3r/Format/OBJ.pm b/lib/Slic3r/Format/OBJ.pm
+index c5cc085..05a141d 100644
+--- a/lib/Slic3r/Format/OBJ.pm
++++ b/lib/Slic3r/Format/OBJ.pm
+@@ -8,7 +8,7 @@ sub read_file {
+     Slic3r::open(\my $fh, '<', $file) or die "Failed to open $file\n";
+     my $vertices = [];
+     my $facets = [];
+-    while (my $_ = <$fh>) {
++    while (<$fh>) {
+         if (/^v ([^ ]+)\s+([^ ]+)\s+([^ ]+)/) {
+             push @$vertices, [$1, $2, $3];
+         } elsif (/^f (\d+).*? (\d+).*? (\d+).*?/) {
+diff --git a/lib/Slic3r/Format/STL.pm b/lib/Slic3r/Format/STL.pm
+index 0d0331c..cf07b1c 100644
+--- a/lib/Slic3r/Format/STL.pm
++++ b/lib/Slic3r/Format/STL.pm
+@@ -53,7 +53,7 @@ sub _read_ascii {
+     my $facet;
+     my %vertices_map = ();
+     seek $fh, 0, 0;
+-    while (my $_ = <$fh>) {
++    while (<$fh>) {
+         if (!$facet) {
+             /^\s*facet\s+normal\s+/ or next;
+             $facet = [];  # ignore normal
+@@ -88,7 +88,7 @@ sub _read_binary {
+     my %vertices_map = ();
+     binmode $fh;
+     seek $fh, 80 + 4, 0;
+-    while (read $fh, my $_, 4*4*3+2) {
++    while (read $fh, $_, 4*4*3+2) {
+         push @$facets, my $facet = [];
+         for (unpack 'x[f3](a[f3])3') {  # ignore normal
+             my $vertex_idx;
+-- 
+1.8.4
+

@@ -20,6 +20,9 @@ Patch1:         %{name}-english-locale.patch
 # Fix crash when loading a config file
 Patch2:         %{name}-load-config-fix.patch
 
+# Perl 5.18 compatibility
+Patch2:         %{name}-perl518.patch
+
 Source1:        %{name}.desktop
 BuildArch:      noarch
 BuildRequires:  perl(Boost::Geometry::Utils) >= 0.12
@@ -67,6 +70,9 @@ for more information.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%if 0%{?fedora} > 19
+%patch3 -p1
+%endif
 
 %build
 SLIC3R_NO_AUTO=1 perl Build.PL installdirs=vendor optimize="$RPM_OPT_FLAGS"
@@ -101,6 +107,7 @@ desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE1}
 %changelog
 * Fri Oct 18 2013 Miro Hrončok <mhroncok@redhat.com> - 0.9.10b-5
 - For F20+, require Moo >= 1.003001
+- Added some Perl 5.18 compatibility patches for F20+
 
 * Fri Oct 18 2013 Miro Hrončok <mhroncok@redhat.com> - 0.9.10b-4
 - Remove all filtering from provides, it is not needed anymore

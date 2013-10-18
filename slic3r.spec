@@ -1,6 +1,6 @@
 Name:           slic3r
 Version:        0.9.10b
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
 # Images are CC-BY, code is AGPLv3
@@ -35,7 +35,11 @@ BuildRequires:  perl(Math::ConvexHull) >= 1.0.4
 BuildRequires:  perl(Math::Geometry::Voronoi)
 BuildRequires:  perl(Math::PlanePath)
 BuildRequires:  perl(Module::Build)
-BuildRequires:  perl(Moo) >= 0.091009
+%if 0%{?fedora} > 19
+BuildRequires:  perl(Moo) >= 1.003001
+%else
+BuildRequires:  perl(Moo)
+%endif
 BuildRequires:  perl(parent)
 BuildRequires:  perl(Scalar::Util)
 BuildRequires:  perl(SVG)
@@ -46,6 +50,9 @@ BuildRequires:  perl(XML::SAX::ExpatXS)
 BuildRequires:  desktop-file-utils
 Requires:       perl(Class::XSAccessor)
 Requires:       perl(Growl::GNTP)
+%if 0%{?fedora} > 19
+Requires:       perl(Moo) >= 1.003001
+%endif
 Requires:       perl(XML::SAX)
 Requires:       perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
 
@@ -92,6 +99,9 @@ desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE1}
 %{_mandir}/man3/*
 
 %changelog
+* Fri Oct 18 2013 Miro Hrončok <mhroncok@redhat.com> - 0.9.10b-5
+- For F20+, require Moo >= 1.003001
+
 * Fri Oct 18 2013 Miro Hrončok <mhroncok@redhat.com> - 0.9.10b-4
 - Remove all filtering from provides, it is not needed anymore
 - Don't add MANIFEST to %%doc

@@ -1,40 +1,43 @@
 Name:           slic3r
-Version:        0.9.10b
-Release:        5%{?dist}
+Version:        1.0.0
+%global rcrc    RC1
+%global verrc   %{version}%{rcrc}
+Release:        0.1.%{rcrc}%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
 # Images are CC-BY, code is AGPLv3
 Group:          Applications/Engineering
 URL:            http://slic3r.org/
-%global commit  d0eac88ff9586b17dcc1766874f69dbd7e8c534f
-%global shortcommit %(c=%{commit}; echo ${c:0:7})
-Source0:        https://github.com/alexrj/Slic3r/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+Source0:        https://github.com/alexrj/Slic3r/archive/%{verrc}.tar.gz
 
-# Use /usr/share to store icons
-Patch0:         %{name}-datadir.patch
+# Modify Build.PL so we are able to build this on Fedora
+Patch0:         %{name}-buildpl.patch
 
-# Use English decimal separator for numbers
-# Reasons are a bit complicated and are described in the patch
-Patch1:         %{name}-english-locale.patch
-
-# Fix crash when loading a config file
-Patch2:         %{name}-load-config-fix.patch
+# Don't warn for Perl >= 5.16
+# Use /usr/share/slic3r as datadir
+# Those two are located at the same place at the code, so the patch is merged
+Patch1:         %{name}-nowarn-datadir.patch
 
 Source1:        %{name}.desktop
-BuildArch:      noarch
-BuildRequires:  perl(Boost::Geometry::Utils) >= 0.12
+BuildRequires:  perl(Boost::Geometry::Utils) >= 0.15
 BuildRequires:  perl(Class::XSAccessor)
 BuildRequires:  perl(Encode::Locale)
+BuildRequires:  perl(ExtUtils::MakeMaker)
+BuildRequires:  perl(ExtUtils::Typemaps::Default) >= 1.03
+BuildRequires:  perl(ExtUtils::Typemap)
+BuildRequires:  perl(File::Basename)
 BuildRequires:  perl(File::Spec)
+BuildRequires:  perl(Getopt::Long)
 BuildRequires:  perl(Growl::GNTP)
 BuildRequires:  perl(IO::Scalar)
 BuildRequires:  perl(List::Util)
 BuildRequires:  perl(Math::Clipper) >= 1.22
 BuildRequires:  perl(Math::ConvexHull::MonotoneChain)
 BuildRequires:  perl(Math::ConvexHull) >= 1.0.4
-BuildRequires:  perl(Math::Geometry::Voronoi)
-BuildRequires:  perl(Math::PlanePath)
+BuildRequires:  perl(Math::Geometry::Voronoi) >= 1.3
+BuildRequires:  perl(Math::PlanePath) >= 53
 BuildRequires:  perl(Module::Build)
+BuildRequires:  perl(Module::Build::WithXSpp)
 %if 0%{?fedora} > 19
 BuildRequires:  perl(Moo) >= 1.003001
 %else
@@ -42,8 +45,11 @@ BuildRequires:  perl(Moo)
 %endif
 BuildRequires:  perl(parent)
 BuildRequires:  perl(Scalar::Util)
+BuildRequires:  perl(Storable)
 BuildRequires:  perl(SVG)
+BuildRequires:  perl(Test::Harness)
 BuildRequires:  perl(Test::More)
+BuildRequires:  perl(Time::HiRes)
 BuildRequires:  perl(Wx)
 BuildRequires:  perl(XML::SAX)
 BuildRequires:  perl(XML::SAX::ExpatXS)
@@ -63,42 +69,62 @@ See the project homepage at slic3r.org and the documentation on the Slic3r wiki
 for more information.
 
 %prep
-%setup -qn Slic3r-%{commit}
+%setup -qn Slic3r-%{verrc}
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 %build
-SLIC3R_NO_AUTO=1 perl Build.PL installdirs=vendor optimize="$RPM_OPT_FLAGS"
+cd xs
+perl ./Build.PL installdirs=vendor optimize="$RPM_OPT_FLAGS"
 ./Build
+cd -
+# Building non XS part only runs test, so skip it and run it in tests
 
 %install
+cd xs
 ./Build install destdir=%{buildroot} create_packlist=0
+cd -
 find %{buildroot} -type f -name '*.bs' -size 0 -exec rm -f {} \;
 
+# I see no way of installing slic3r with it's build script
+# So I copy the files around manually
+mkdir -p %{buildroot}%{_bindir}
+mkdir -p %{buildroot}%{perl_vendorlib}
 mkdir -p %{buildroot}%{_datadir}/%{name}
 mkdir -p %{buildroot}%{_datadir}/pixmaps
 
-mv -f %{buildroot}%{_bindir}/%{name}.pl %{buildroot}%{_bindir}/%{name}
+cp -a %{name}.pl %{buildroot}%{_bindir}/%{name}
+cp -ar lib/* %{buildroot}%{perl_vendorlib}
+
 cp -a var/* %{buildroot}%{_datadir}/%{name}
 ln -s ../%{name}/Slic3r.ico %{buildroot}%{_datadir}/pixmaps/%{name}.ico
 desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE1}
 
-%{_fixperms} %{buildroot}/*
+%{_fixperms} %{buildroot}*
 
 %check
+cd xs
 ./Build test
+cd -
+SLIC3R_NO_AUTO=1 perl Build.PL installdirs=vendor
+# the --gui runs no tests, it only checks requires
 
 %files
-%doc README.markdown
+%doc README.md
 %{_bindir}/%{name}
 %{perl_vendorlib}/Slic3r*
+%{perl_vendorarch}/Slic3r*
+%{perl_vendorarch}/auto/Slic3r*
 %{_datadir}/pixmaps/%{name}.ico
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/%{name}
-%{_mandir}/man3/*
 
 %changelog
+* Wed Nov 20 2013 Miro Hrončok <mhroncok@redhat.com> - 1.0.0-0.1.RC1
+- 1.0.0RC1 version
+- refactor build and isntall
+- become arched
+
 * Fri Oct 18 2013 Miro Hrončok <mhroncok@redhat.com> - 0.9.10b-5
 - For F20+, require Moo >= 1.003001
 

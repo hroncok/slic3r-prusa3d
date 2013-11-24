@@ -1,0 +1,25 @@
+diff --git a/Build.PL b/Build.PL
+index b501025..1abe9fe 100644
+--- a/Build.PL
++++ b/Build.PL
+@@ -9,7 +9,7 @@ use File::Spec;
+ my %prereqs = qw(
+     Boost::Geometry::Utils          0.15
+     Encode::Locale                  0
+-    ExtUtils::MakeMaker             6.80
++    ExtUtils::MakeMaker             6.70
+     File::Basename                  0
+     File::Spec                      0
+     Getopt::Long                    0
+@@ -142,7 +142,10 @@ if (@missing_prereqs) {
+     exit 1;
+ } elsif (!$gui) {
+     eval "use App::Prove; 1" or die "Failed to load App::Prove";
+-    my $res = App::Prove->new->run ? 0 : 1;
++    
++    my $app = App::Prove->new;
++    $app->process_args('-Ixs/blib/lib','-Ixs/blib/arch');
++    my $res = $app->run ? 0 : 1;
+     if ($res == 0) {
+         print "If you also want to use the GUI you can now run `perl Build.PL --gui` to install the required modules.\n";
+     } else {

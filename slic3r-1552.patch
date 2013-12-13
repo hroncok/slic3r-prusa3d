@@ -1,0 +1,28 @@
+From 0afee63e84d61b4af66982723b7777518dac900c Mon Sep 17 00:00:00 2001
+From: Alessandro Ranellucci <aar@cpan.org>
+Date: Sat, 7 Dec 2013 21:03:10 +0100
+Subject: [PATCH] Fixed regression in object placement in STL export. #1552
+
+---
+ lib/Slic3r/Model.pm | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/Slic3r/Model.pm b/lib/Slic3r/Model.pm
+index 23d827c..4ff7e4d 100644
+--- a/lib/Slic3r/Model.pm
++++ b/lib/Slic3r/Model.pm
+@@ -216,9 +216,9 @@ sub mesh {
+         foreach my $instance (@instances) {
+             my $mesh = $object->mesh->clone;
+             if ($instance) {
+-                $mesh->rotate($instance->rotation, Slic3r::Point->new(0,0));
+-                $mesh->scale($instance->scaling_factor);
+                 $mesh->align_to_origin;
++                $mesh->rotate($instance->rotation, $object->center_2D);
++                $mesh->scale($instance->scaling_factor);
+                 $mesh->translate(@{$instance->offset}, 0);
+             }
+             push @meshes, $mesh;
+-- 
+1.8.5.1
+

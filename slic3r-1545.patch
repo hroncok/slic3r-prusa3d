@@ -1,0 +1,116 @@
+From 387df3b90024f99c4cd540488374ab41c60ddb60 Mon Sep 17 00:00:00 2001
+From: Alessandro Ranellucci <aar@cpan.org>
+Date: Sun, 24 Nov 2013 13:04:16 +0100
+Subject: [PATCH] Fix regression causing toolchange_gcode to crash Slic3r.
+ Includes regression test. #1545
+
+---
+ lib/Slic3r/GCode.pm       |  8 +++++++-
+ lib/Slic3r/GCode/Layer.pm |  2 +-
+ lib/Slic3r/Print.pm       | 12 ++++--------
+ t/multi.t                 |  1 +
+ 4 files changed, 13 insertions(+), 10 deletions(-)
+
+diff --git a/lib/Slic3r/GCode.pm b/lib/Slic3r/GCode.pm
+index 9ae5d95..c89d98c 100644
+--- a/lib/Slic3r/GCode.pm
++++ b/lib/Slic3r/GCode.pm
+@@ -8,6 +8,7 @@ use Slic3r::Geometry::Clipper qw(union_ex);
+ use Slic3r::Surface ':types';
+ 
+ has 'config'             => (is => 'ro', required => 1);
++has 'extra_variables'    => (is => 'rw', default => sub {{}});
+ has 'extruders'          => (is => 'ro', required => 1);
+ has 'multiple_extruders' => (is => 'lazy');
+ has 'standby_points'     => (is => 'rw');
+@@ -642,7 +643,7 @@ sub set_extruder {
+     
+     # append custom toolchange G-code
+     if (defined $self->extruder && $self->config->toolchange_gcode) {
+-        $gcode .= sprintf "%s\n", $self->print->replace_variables($self->config->toolchange_gcode, {
++        $gcode .= sprintf "%s\n", $self->replace_variables($self->config->toolchange_gcode, {
+             previous_extruder   => $self->extruder->id,
+             next_extruder       => $extruder->id,
+         });
+@@ -741,4 +742,9 @@ sub set_bed_temperature {
+     return $gcode;
+ }
+ 
++sub replace_variables {
++    my ($self, $string, $extra) = @_;
++    return $self->config->replace_options($string, { %{$self->extra_variables}, %{ $extra || {} } });
++}
++
+ 1;
+diff --git a/lib/Slic3r/GCode/Layer.pm b/lib/Slic3r/GCode/Layer.pm
+index 1fd7096..8709ed8 100644
+--- a/lib/Slic3r/GCode/Layer.pm
++++ b/lib/Slic3r/GCode/Layer.pm
+@@ -66,7 +66,7 @@ sub process_layer {
+     
+     # set new layer - this will change Z and force a retraction if retract_layer_change is enabled
+     $gcode .= $self->gcodegen->change_layer($layer);
+-    $gcode .= $self->print->replace_variables($Slic3r::Config->layer_gcode, {
++    $gcode .= $self->gcodegen->replace_variables($Slic3r::Config->layer_gcode, {
+         layer_num => $self->gcodegen->layer->id,
+     }) . "\n" if $Slic3r::Config->layer_gcode;
+     
+diff --git a/lib/Slic3r/Print.pm b/lib/Slic3r/Print.pm
+index a9c9ef3..ed0d806 100644
+--- a/lib/Slic3r/Print.pm
++++ b/lib/Slic3r/Print.pm
+@@ -726,6 +726,7 @@ sub write_gcode {
+     # set up our extruder object
+     my $gcodegen = Slic3r::GCode->new(
+         config              => $self->config,
++        extra_variables     => $self->extra_variables,
+         extruders           => $self->extruders,    # we should only pass the *used* extruders (but maintain the Tx indices right!)
+         layer_count         => $self->layer_count,
+     );
+@@ -749,7 +750,7 @@ sub write_gcode {
+         }
+     };
+     $print_first_layer_temperature->(0);
+-    printf $fh "%s\n", $self->replace_variables($Slic3r::Config->start_gcode);
++    printf $fh "%s\n", $gcodegen->replace_variables($Slic3r::Config->start_gcode);
+     $print_first_layer_temperature->(1);
+     
+     # set other general things
+@@ -902,7 +903,7 @@ sub write_gcode {
+     # write end commands to file
+     print $fh $gcodegen->retract if $gcodegen->extruder;  # empty prints don't even set an extruder
+     print $fh $gcodegen->set_fan(0);
+-    printf $fh "%s\n", $self->replace_variables($Slic3r::Config->end_gcode);
++    printf $fh "%s\n", $gcodegen->replace_variables($Slic3r::Config->end_gcode);
+     
+     foreach my $extruder (@{$self->extruders}) {
+         printf $fh "; filament used = %.1fmm (%.1fcm3)\n",
+@@ -949,12 +950,7 @@ sub expanded_output_filepath {
+         # path is a full path to a file so we use it as it is
+     }
+     
+-    return $self->replace_variables($path, $extra_variables);
+-}
+-
+-sub replace_variables {
+-    my ($self, $string, $extra) = @_;
+-    return $self->config->replace_options($string, { %{$self->extra_variables}, %{ $extra || {} } });
++    return $self->config->replace_options($path, { %{$self->extra_variables}, %$extra_variables });
+ }
+ 
+ # given the path to a file, this function returns its filename with and without extension
+diff --git a/t/multi.t b/t/multi.t
+index d338a2d..c7214e8 100644
+--- a/t/multi.t
++++ b/t/multi.t
+@@ -22,6 +22,7 @@ use Slic3r::Test;
+     $config->set('extruder_offset', [ [0,0], [20,0], [0,20] ]);
+     $config->set('temperature', [200, 180, 170]);
+     $config->set('first_layer_temperature', [206, 186, 166]);
++    $config->set('toolchange_gcode', ';toolchange');  # test that it doesn't crash when this is supplied
+     
+     my $print = Slic3r::Test::init_print('20mm_cube', config => $config);
+     
+-- 
+1.8.5.1
+

@@ -1,0 +1,47 @@
+From 5217bc370a2941221322c26c8cb08b6de4c0e0fd Mon Sep 17 00:00:00 2001
+From: Alessandro Ranellucci <aar@cpan.org>
+Date: Sun, 24 Nov 2013 12:37:36 +0100
+Subject: [PATCH] Fix regression causing retraction restarts to ignore
+ extrusion_axis. Includes regression test. #1547
+
+---
+ lib/Slic3r/GCode.pm | 3 ++-
+ t/gcode.t           | 7 ++++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/lib/Slic3r/GCode.pm b/lib/Slic3r/GCode.pm
+index 4563cd7..9ae5d95 100644
+--- a/lib/Slic3r/GCode.pm
++++ b/lib/Slic3r/GCode.pm
+@@ -546,7 +546,8 @@ sub unretract {
+             $gcode .= "G11 ; unretract\n";
+         } elsif ($self->config->extrusion_axis) {
+             # use G1 instead of G0 because G0 will blend the restart with the previous travel move
+-            $gcode .= sprintf "G1 E%.5f F%.3f",
++            $gcode .= sprintf "G1 %s%.5f F%.3f",
++                $self->config->extrusion_axis,
+                 $self->extruder->extrude($to_unretract),
+                 $self->extruder->retract_speed_mm_min;
+             $gcode .= " ; compensate retraction" if $self->config->gcode_comments;
+diff --git a/t/gcode.t b/t/gcode.t
+index bb51698..f8ee415 100644
+--- a/t/gcode.t
++++ b/t/gcode.t
+@@ -46,8 +46,13 @@ use Slic3r::Test;
+     my $config = Slic3r::Config->new_from_defaults;
+     $config->set('complete_objects', 1);
+     $config->set('duplicate', 2);
++    $config->set('extrusion_axis', 'A');
+     my $print = Slic3r::Test::init_print('20mm_cube', config => $config);
+-    ok Slic3r::Test::gcode($print), "complete_objects";
++    ok my $gcode = Slic3r::Test::gcode($print), "complete_objects";
++    Slic3r::GCode::Reader->new->parse($gcode, sub {
++        my ($self, $cmd, $args, $info) = @_;
++        fail 'unexpected E argument' if defined $args->{E};
++    });
+ }
+ 
+ __END__
+-- 
+1.8.5.1
+

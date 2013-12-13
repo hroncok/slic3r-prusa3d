@@ -2,7 +2,7 @@ Name:           slic3r
 Version:        1.0.0
 %global rcrc    RC1
 %global verrc   %{version}%{rcrc}
-Release:        0.1.%{rcrc}%{?dist}
+Release:        0.2.%{rcrc}%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
 # Images are CC-BY, code is AGPLv3
@@ -17,6 +17,12 @@ Patch0:         %{name}-buildpl.patch
 # Use /usr/share/slic3r as datadir
 # Those two are located at the same place at the code, so the patch is merged
 Patch1:         %{name}-nowarn-datadir.patch
+
+Patch11:        %{name}-1543.patch
+Patch12:        %{name}-1545.patch
+Patch13:        %{name}-1547.patch
+Patch14:        %{name}-1552.patch
+Patch15:        %{name}-1582-1541.patch
 
 Source1:        %{name}.desktop
 BuildRequires:  perl(Boost::Geometry::Utils) >= 0.15
@@ -76,6 +82,12 @@ for more information.
 %patch0 -p1
 %patch1 -p1
 
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
+
 %build
 cd xs
 perl ./Build.PL installdirs=vendor optimize="$RPM_OPT_FLAGS"
@@ -123,6 +135,9 @@ SLIC3R_NO_AUTO=1 perl Build.PL installdirs=vendor
 %{_datadir}/%{name}
 
 %changelog
+* Fri Dec 13 2013 Miro Hrončok <mhroncok@redhat.com> - 1.0.0-0.2.RC1
+- Backported several bugfixes
+
 * Wed Nov 20 2013 Miro Hrončok <mhroncok@redhat.com> - 1.0.0-0.1.RC1
 - 1.0.0RC1 version
 - refactor build and install

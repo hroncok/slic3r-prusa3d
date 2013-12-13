@@ -122,7 +122,7 @@ SLIC3R_NO_AUTO=1 perl Build.PL installdirs=vendor
 %changelog
 * Wed Nov 20 2013 Miro Hrončok <mhroncok@redhat.com> - 1.0.0-0.1.RC1
 - 1.0.0RC1 version
-- refactor build and isntall
+- refactor build and install
 - become arched
 
 * Fri Oct 18 2013 Miro Hrončok <mhroncok@redhat.com> - 0.9.10b-5

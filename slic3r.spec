@@ -62,6 +62,9 @@ Requires:       perl(Moo) >= 1.003001
 Requires:       perl(XML::SAX)
 Requires:       perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
 
+# Temporary bundling exception https://fedorahosted.org/fpc/ticket/368
+Provides:       bundled(admesh) = 0.95
+
 %description
 Slic3r is a G-code generator for 3D printers. It's compatible with RepRaps,
 Makerbots, Ultimakers and many more machines.
@@ -124,6 +127,7 @@ SLIC3R_NO_AUTO=1 perl Build.PL installdirs=vendor
 - 1.0.0RC1 version
 - refactor build and install
 - become arched
+- bundle admesh
 
 * Fri Oct 18 2013 Miro Hrončok <mhroncok@redhat.com> - 0.9.10b-5
 - For F20+, require Moo >= 1.003001

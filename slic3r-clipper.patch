@@ -1,0 +1,39 @@
+diff --git a/xs/Build.PL b/xs/Build.PL
+index b358623..90a2cc2 100644
+--- a/xs/Build.PL
++++ b/xs/Build.PL
+@@ -25,7 +25,7 @@ my $build = Module::Build::WithXSpp->new(
+     # HAS_BOOL         : stops Perl/lib/CORE/handy.h from doing "#  define bool char" for MSVC
+     # NOGDI            : prevents inclusion of wingdi.h which defines functions Polygon() and Polyline() in global namespace
+     extra_compiler_flags => [qw(-D_GLIBCXX_USE_C99 -DHAS_BOOL -DNOGDI -DSLIC3RXS), ($ENV{SLIC3R_DEBUG} ? ' -DSLIC3R_DEBUG -g' : '')],
+-    
++    extra_linker_flags => [qw(-lpolyclipping)],
+     # Provides extra C typemaps that are auto-merged
+     extra_typemap_modules => {
+         'ExtUtils::Typemaps::Default' => '1.03',
+diff --git a/xs/src/ClipperUtils.hpp b/xs/src/ClipperUtils.hpp
+index 8f0974d..ab8f46d 100644
+--- a/xs/src/ClipperUtils.hpp
++++ b/xs/src/ClipperUtils.hpp
+@@ -2,7 +2,7 @@
+ #define slic3r_ClipperUtils_hpp_
+ 
+ #include <myinit.h>
+-#include "clipper.hpp"
++#include <polyclipping/clipper.hpp>
+ #include "ExPolygon.hpp"
+ #include "Polygon.hpp"
+ 
+diff --git a/xs/xsp/Clipper.xsp b/xs/xsp/Clipper.xsp
+index 2e63afb..61910e6 100644
+--- a/xs/xsp/Clipper.xsp
++++ b/xs/xsp/Clipper.xsp
+@@ -2,7 +2,7 @@
+ 
+ %{
+ #include <myinit.h>
+-#include "clipper.hpp"
++#include <polyclipping/clipper.hpp>
+ #include "ClipperUtils.hpp"
+ %}
+ 

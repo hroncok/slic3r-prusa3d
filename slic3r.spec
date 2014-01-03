@@ -1,14 +1,17 @@
 Name:           slic3r
 Version:        1.0.0
-%global rcrc    RC1
+%global rcrc    RC2
 %global verrc   %{version}%{rcrc}
-Release:        0.2.%{rcrc}%{?dist}
+Release:        0.3.%{rcrc}%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
 # Images are CC-BY, code is AGPLv3
 Group:          Applications/Engineering
 URL:            http://slic3r.org/
 Source0:        https://github.com/alexrj/Slic3r/archive/%{verrc}.tar.gz
+
+# This is blocked by https://bugzilla.redhat.com/show_bug.cgi?id=1047914
+%global         with_clipper 0
 
 # Modify Build.PL so we are able to build this on Fedora
 Patch0:         %{name}-buildpl.patch
@@ -18,11 +21,10 @@ Patch0:         %{name}-buildpl.patch
 # Those two are located at the same place at the code, so the patch is merged
 Patch1:         %{name}-nowarn-datadir.patch
 
-Patch11:        %{name}-1543.patch
-Patch12:        %{name}-1545.patch
-Patch13:        %{name}-1547.patch
-Patch14:        %{name}-1552.patch
-Patch15:        %{name}-1582-1541.patch
+%if %with_clipper
+# Unbundle clipper
+Patch2:         %{name}-clipper.patch
+%endif
 
 Source1:        %{name}.desktop
 BuildRequires:  perl(Boost::Geometry::Utils) >= 0.15
@@ -37,18 +39,19 @@ BuildRequires:  perl(Getopt::Long)
 BuildRequires:  perl(Growl::GNTP)
 BuildRequires:  perl(IO::Scalar)
 BuildRequires:  perl(List::Util)
-BuildRequires:  perl(Math::Clipper) >= 1.22
 BuildRequires:  perl(Math::ConvexHull::MonotoneChain)
 BuildRequires:  perl(Math::ConvexHull) >= 1.0.4
 BuildRequires:  perl(Math::Geometry::Voronoi) >= 1.3
 BuildRequires:  perl(Math::PlanePath) >= 53
 BuildRequires:  perl(Module::Build)
 BuildRequires:  perl(Module::Build::WithXSpp)
+
 %if 0%{?fedora} > 19
 BuildRequires:  perl(Moo) >= 1.003001
 %else
 BuildRequires:  perl(Moo)
 %endif
+
 BuildRequires:  perl(parent)
 BuildRequires:  perl(Scalar::Util)
 BuildRequires:  perl(Storable)
@@ -59,12 +62,19 @@ BuildRequires:  perl(Time::HiRes)
 BuildRequires:  perl(Wx)
 BuildRequires:  perl(XML::SAX)
 BuildRequires:  perl(XML::SAX::ExpatXS)
+
+%if %with_clipper
+BuildRequires:  polyclipping-devel
+%endif
+
 BuildRequires:  desktop-file-utils
 Requires:       perl(Class::XSAccessor)
 Requires:       perl(Growl::GNTP)
+
 %if 0%{?fedora} > 19
 Requires:       perl(Moo) >= 1.003001
 %endif
+
 Requires:       perl(XML::SAX)
 Requires:       perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
 
@@ -79,14 +89,15 @@ for more information.
 
 %prep
 %setup -qn Slic3r-%{verrc}
+
 %patch0 -p1
 %patch1 -p1
 
-%patch11 -p1
-%patch12 -p1
-%patch13 -p1
-%patch14 -p1
-%patch15 -p1
+%if %with_clipper
+%patch2 -p1
+# Remove bundled clipper
+rm xs/src/clipper.*pp
+%endif
 
 %build
 cd xs
@@ -135,6 +146,11 @@ SLIC3R_NO_AUTO=1 perl Build.PL installdirs=vendor
 %{_datadir}/%{name}
 
 %changelog
+* Thu Jan 02 2014 Miro Hrončok <mhroncok@redhat.com> - 1.0.0-0.3.RC2
+- New RC version
+- Remove already merged patches
+- Only require Module::Build::WithXSpp 0.13 in Build.PL
+
 * Fri Dec 13 2013 Miro Hrončok <mhroncok@redhat.com> - 1.0.0-0.2.RC1
 - Backported several bugfixes
 

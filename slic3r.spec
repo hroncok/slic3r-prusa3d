@@ -27,6 +27,8 @@ Patch2:         %{name}-clipper.patch
 %endif
 
 Source1:        %{name}.desktop
+Source2:        %{name}.appdata.xml
+
 BuildRequires:  perl(Boost::Geometry::Utils) >= 0.15
 BuildRequires:  perl(Class::XSAccessor)
 BuildRequires:  perl(Encode::Locale)
@@ -118,6 +120,7 @@ mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{perl_vendorlib}
 mkdir -p %{buildroot}%{_datadir}/%{name}
 mkdir -p %{buildroot}%{_datadir}/pixmaps
+mkdir -p %{buildroot}%{_datadir}/appdata
 
 cp -a %{name}.pl %{buildroot}%{_bindir}/%{name}
 cp -ar lib/* %{buildroot}%{perl_vendorlib}
@@ -125,6 +128,8 @@ cp -ar lib/* %{buildroot}%{perl_vendorlib}
 cp -a var/* %{buildroot}%{_datadir}/%{name}
 ln -s ../%{name}/Slic3r.ico %{buildroot}%{_datadir}/pixmaps/%{name}.ico
 desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE1}
+
+cp %{SOURCE2} %{buildroot}%{_datadir}/appdata/%{name}.appdata.xml
 
 %{_fixperms} %{buildroot}*
 
@@ -143,11 +148,16 @@ SLIC3R_NO_AUTO=1 perl Build.PL installdirs=vendor
 %{perl_vendorarch}/auto/Slic3r*
 %{_datadir}/pixmaps/%{name}.ico
 %{_datadir}/applications/%{name}.desktop
+%if 0%{?fedora} < 21
+%dir %{_datadir}/appdata
+%endif
+%{_datadir}/appdata/%{name}.appdata.xml
 %{_datadir}/%{name}
 
 %changelog
 * Wed Mar 05 2014 Miro Hrončok <mhroncok@redhat.com> - 1.0.0-0.4.RC3
 - New RC version
+- Include appdata file
 
 * Thu Jan 02 2014 Miro Hrončok <mhroncok@redhat.com> - 1.0.0-0.3.RC2
 - New RC version

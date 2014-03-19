@@ -2,7 +2,7 @@ Name:           slic3r
 Version:        1.0.0
 %global rcrc    RC3
 %global verrc   %{version}%{rcrc}
-Release:        0.4.%{rcrc}%{?dist}
+Release:        0.5.%{rcrc}%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
 # Images are CC-BY, code is AGPLv3
@@ -70,6 +70,7 @@ BuildRequires:  polyclipping-devel
 %endif
 
 BuildRequires:  desktop-file-utils
+BuildRequires:  ImageMagick
 Requires:       perl(Class::XSAccessor)
 Requires:       perl(Growl::GNTP)
 
@@ -108,6 +109,20 @@ perl ./Build.PL installdirs=vendor optimize="$RPM_OPT_FLAGS"
 cd -
 # Building non XS part only runs test, so skip it and run it in tests
 
+# prepare pngs in mutliple sizes
+for res in 16 32 48 128 256; do
+  mkdir -p hicolor/${res}x${res}/apps
+done
+cd hicolor
+convert ../var/Slic3r.ico %{name}.png
+cp %{name}-0.png 256x256/apps/%{name}.png
+cp %{name}-1.png 128x128/apps/%{name}.png
+cp %{name}-2.png 48x48/apps/%{name}.png
+cp %{name}-3.png 32x32/apps/%{name}.png
+cp %{name}-4.png 16x16/apps/%{name}.png
+rm %{name}-*.png
+cd -
+
 %install
 cd xs
 ./Build install destdir=%{buildroot} create_packlist=0
@@ -119,14 +134,14 @@ find %{buildroot} -type f -name '*.bs' -size 0 -exec rm -f {} \;
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{perl_vendorlib}
 mkdir -p %{buildroot}%{_datadir}/%{name}
-mkdir -p %{buildroot}%{_datadir}/pixmaps
+mkdir -p %{buildroot}%{_datadir}/icons
 mkdir -p %{buildroot}%{_datadir}/appdata
 
 cp -a %{name}.pl %{buildroot}%{_bindir}/%{name}
 cp -ar lib/* %{buildroot}%{perl_vendorlib}
 
 cp -a var/* %{buildroot}%{_datadir}/%{name}
-ln -s ../%{name}/Slic3r.ico %{buildroot}%{_datadir}/pixmaps/%{name}.ico
+cp -r hicolor %{buildroot}%{_datadir}/icons
 desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE1}
 
 cp %{SOURCE2} %{buildroot}%{_datadir}/appdata/%{name}.appdata.xml
@@ -140,13 +155,27 @@ cd -
 SLIC3R_NO_AUTO=1 perl Build.PL installdirs=vendor
 # the --gui runs no tests, it only checks requires
 
+%post
+/sbin/ldconfig
+/bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
+
+%postun
+/sbin/ldconfig
+if [ $1 -eq 0 ] ; then
+    /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
+    /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+fi
+
+%posttrans
+/usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+
 %files
 %doc README.md
 %{_bindir}/%{name}
 %{perl_vendorlib}/Slic3r*
 %{perl_vendorarch}/Slic3r*
 %{perl_vendorarch}/auto/Slic3r*
-%{_datadir}/pixmaps/%{name}.ico
+%{_datadir}/icons/hicolor/*/apps/%{name}.png
 %{_datadir}/applications/%{name}.desktop
 %if 0%{?fedora} < 21
 %dir %{_datadir}/appdata
@@ -155,6 +184,9 @@ SLIC3R_NO_AUTO=1 perl Build.PL installdirs=vendor
 %{_datadir}/%{name}
 
 %changelog
+* Wed Mar 19 2014 Miro Hrončok <mhroncok@redhat.com> - 1.0.0-0.5.RC3
+- Instead of single ico file, ship multiple pngs
+
 * Wed Mar 05 2014 Miro Hrončok <mhroncok@redhat.com> - 1.0.0-0.4.RC3
 - New RC version
 - Include appdata file

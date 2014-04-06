@@ -1,14 +1,12 @@
 Name:           slic3r
 Version:        1.0.0
-%global rcrc    RC3
-%global verrc   %{version}%{rcrc}
-Release:        0.5.%{rcrc}%{?dist}
+Release:        1%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
 # Images are CC-BY, code is AGPLv3
 Group:          Applications/Engineering
 URL:            http://slic3r.org/
-Source0:        https://github.com/alexrj/Slic3r/archive/%{verrc}.tar.gz
+Source0:        https://github.com/alexrj/Slic3r/archive/%{version}.tar.gz
 
 # This is blocked by https://bugzilla.redhat.com/show_bug.cgi?id=1047914
 %global         with_clipper 0
@@ -91,7 +89,7 @@ See the project homepage at slic3r.org and the documentation on the Slic3r wiki
 for more information.
 
 %prep
-%setup -qn Slic3r-%{verrc}
+%setup -qn Slic3r-%{version}
 
 %patch0 -p1
 %patch1 -p1
@@ -184,6 +182,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Sun Apr 06 2014 Miro Hrončok <mhroncok@redhat.com> - 1.0.0-1
+- 1.0.0 stable
+
 * Wed Mar 19 2014 Miro Hrončok <mhroncok@redhat.com> - 1.0.0-0.5.RC3
 - Instead of single ico file, ship multiple pngs
 

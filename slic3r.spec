@@ -1,6 +1,6 @@
 Name:           slic3r
-Version:        1.0.1
-Release:        2%{?dist}
+Version:        1.1.5
+Release:        1%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
 # Images are CC-BY, code is AGPLv3
@@ -8,7 +8,7 @@ Group:          Applications/Engineering
 URL:            http://slic3r.org/
 Source0:        https://github.com/alexrj/Slic3r/archive/%{version}.tar.gz
 
-# This is blocked by https://bugzilla.redhat.com/show_bug.cgi?id=1047914
+# This is waiting for the new release of clipper
 %global         with_clipper 0
 
 # Modify Build.PL so we are able to build this on Fedora
@@ -18,40 +18,34 @@ Patch0:         %{name}-buildpl.patch
 # Use /usr/share/slic3r as datadir
 # Those two are located at the same place at the code, so the patch is merged
 Patch1:         %{name}-nowarn-datadir.patch
+Patch2:         %{name}-linker.patch
 
 %if %with_clipper
 # Unbundle clipper
-Patch2:         %{name}-clipper.patch
+Patch3:         %{name}-clipper.patch
 %endif
 
 Source1:        %{name}.desktop
 Source2:        %{name}.appdata.xml
 
-BuildRequires:  perl(Boost::Geometry::Utils) >= 0.15
 BuildRequires:  perl(Class::XSAccessor)
 BuildRequires:  perl(Encode::Locale)
-BuildRequires:  perl(ExtUtils::MakeMaker)
-BuildRequires:  perl(ExtUtils::Typemaps::Default) >= 1.03
+BuildRequires:  perl(ExtUtils::MakeMaker) >= 6.80
+BuildRequires:  perl(ExtUtils::ParseXS) >= 3.22
 BuildRequires:  perl(ExtUtils::Typemap)
+BuildRequires:  perl(ExtUtils::Typemaps::Default) >= 1.03
 BuildRequires:  perl(File::Basename)
 BuildRequires:  perl(File::Spec)
 BuildRequires:  perl(Getopt::Long)
-BuildRequires:  perl(Growl::GNTP)
+BuildRequires:  perl(Growl::GNTP) >= 0.15
 BuildRequires:  perl(IO::Scalar)
 BuildRequires:  perl(List::Util)
 BuildRequires:  perl(Math::ConvexHull::MonotoneChain)
 BuildRequires:  perl(Math::ConvexHull) >= 1.0.4
 BuildRequires:  perl(Math::Geometry::Voronoi) >= 1.3
 BuildRequires:  perl(Math::PlanePath) >= 53
-BuildRequires:  perl(Module::Build)
-BuildRequires:  perl(Module::Build::WithXSpp)
-
-%if 0%{?fedora} > 19
+BuildRequires:  perl(Module::Build::WithXSpp) >= 0.14
 BuildRequires:  perl(Moo) >= 1.003001
-%else
-BuildRequires:  perl(Moo)
-%endif
-
 BuildRequires:  perl(parent)
 BuildRequires:  perl(Scalar::Util)
 BuildRequires:  perl(Storable)
@@ -67,20 +61,14 @@ BuildRequires:  perl(XML::SAX::ExpatXS)
 BuildRequires:  polyclipping-devel
 %endif
 
+BuildRequires:  admesh-devel >= 0.97.5
+BuildRequires:  boost-devel
 BuildRequires:  desktop-file-utils
+BuildRequires:  poly2tri-devel
 BuildRequires:  ImageMagick
-Requires:       perl(Class::XSAccessor)
-Requires:       perl(Growl::GNTP)
-
-%if 0%{?fedora} > 19
-Requires:       perl(Moo) >= 1.003001
-%endif
 
 Requires:       perl(XML::SAX)
 Requires:       perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
-
-# Temporary bundling exception https://fedorahosted.org/fpc/ticket/368
-Provides:       bundled(admesh) = 0.95
 
 %description
 Slic3r is a G-code generator for 3D printers. It's compatible with RepRaps,
@@ -93,12 +81,18 @@ for more information.
 
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %if %with_clipper
-%patch2 -p1
+%patch3 -p1
 # Remove bundled clipper
 rm xs/src/clipper.*pp
 %endif
+
+# Remove bundled admesh, poly2tri and boost
+rm -rf xs/src/admesh
+rm -rf xs/src/poly2tri
+rm -rf xs/src/boost
 
 %build
 cd xs
@@ -182,6 +176,10 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Sun Jun 29 2014 Miro Hrončok <mhroncok@redhat.com> - 1.1.5-1
+- Update to 1.1.5
+- Unbundle stuff
+
 * Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 

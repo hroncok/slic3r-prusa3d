@@ -69,6 +69,7 @@ BuildRequires:  ImageMagick
 
 Requires:       perl(XML::SAX)
 Requires:       perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
+Requires:       admesh-libs >= 0.97.5
 
 %description
 Slic3r is a G-code generator for 3D printers. It's compatible with RepRaps,

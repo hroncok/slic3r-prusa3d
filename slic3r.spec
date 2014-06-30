@@ -118,6 +118,11 @@ cp %{name}-4.png 16x16/apps/%{name}.png
 rm %{name}-*.png
 cd -
 
+# To avoid "iCCP: Not recognized known sRGB profile that has been edited"
+cd var
+find . -type f -name "*.png" -exec convert {} -strip {} \;
+cd -
+
 %install
 cd xs
 ./Build install destdir=%{buildroot} create_packlist=0

@@ -18,11 +18,12 @@ Patch0:         %{name}-buildpl.patch
 # Use /usr/share/slic3r as datadir
 # Those two are located at the same place at the code, so the patch is merged
 Patch1:         %{name}-nowarn-datadir.patch
-Patch2:         %{name}-linker.patch
+Patch2:         %{name}-english-locale.patch
+Patch3:         %{name}-linker.patch
 
 %if %with_clipper
 # Unbundle clipper
-Patch3:         %{name}-clipper.patch
+Patch4:         %{name}-clipper.patch
 %endif
 
 Source1:        %{name}.desktop
@@ -83,9 +84,10 @@ for more information.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %if %with_clipper
-%patch3 -p1
+%patch4 -p1
 # Remove bundled clipper
 rm xs/src/clipper.*pp
 %endif

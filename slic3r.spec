@@ -1,6 +1,6 @@
 Name:           slic3r
 Version:        1.1.6
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
 # Images are CC-BY, code is AGPLv3
@@ -186,6 +186,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Mon Aug 18 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.1.6-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
 * Tue Jul 29 2014 Miro Hrončok <mhroncok@redhat.com> - 1.1.6-1
 - Update to 1.1.6
 

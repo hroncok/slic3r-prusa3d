@@ -20,10 +20,11 @@ Patch0:         %{name}-buildpl.patch
 Patch1:         %{name}-nowarn-datadir.patch
 Patch2:         %{name}-english-locale.patch
 Patch3:         %{name}-linker.patch
+Patch4:         %{name}-clear-error.patch
 
 %if %with_clipper
 # Unbundle clipper
-Patch4:         %{name}-clipper.patch
+Patch5:         %{name}-clipper.patch
 %endif
 
 Source1:        %{name}.desktop
@@ -62,7 +63,7 @@ BuildRequires:  perl(XML::SAX::ExpatXS)
 BuildRequires:  polyclipping-devel
 %endif
 
-BuildRequires:  admesh-devel >= 0.97.5
+BuildRequires:  admesh-devel >= 0.98.1
 BuildRequires:  boost-devel
 BuildRequires:  desktop-file-utils
 BuildRequires:  poly2tri-devel
@@ -85,9 +86,10 @@ for more information.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %if %with_clipper
-%patch4 -p1
+%patch5 -p1
 # Remove bundled clipper
 rm xs/src/clipper.*pp
 %endif
@@ -150,7 +152,7 @@ cp %{SOURCE2} %{buildroot}%{_datadir}/appdata/%{name}.appdata.xml
 
 %check
 cd xs
-./Build test
+./Build test verbose=1
 cd -
 SLIC3R_NO_AUTO=1 perl Build.PL installdirs=vendor
 # the --gui runs no tests, it only checks requires

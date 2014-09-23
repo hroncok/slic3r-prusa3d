@@ -21,10 +21,11 @@ Patch1:         %{name}-nowarn-datadir.patch
 Patch2:         %{name}-english-locale.patch
 Patch3:         %{name}-linker.patch
 Patch4:         %{name}-clear-error.patch
+Patch5:         %{name}-test-out-of-memory.patch
 
 %if %with_clipper
 # Unbundle clipper
-Patch5:         %{name}-clipper.patch
+Patch6:         %{name}-clipper.patch
 %endif
 
 Source1:        %{name}.desktop
@@ -35,7 +36,7 @@ BuildRequires:  perl(Encode::Locale)
 BuildRequires:  perl(ExtUtils::MakeMaker) >= 6.80
 BuildRequires:  perl(ExtUtils::ParseXS) >= 3.22
 BuildRequires:  perl(ExtUtils::Typemap)
-BuildRequires:  perl(ExtUtils::Typemaps::Default) >= 1.03
+BuildRequires:  perl(ExtUtils::Typemaps::Default) >= 1.05
 BuildRequires:  perl(File::Basename)
 BuildRequires:  perl(File::Spec)
 BuildRequires:  perl(Getopt::Long)
@@ -87,9 +88,10 @@ for more information.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %if %with_clipper
-%patch5 -p1
+%patch6 -p1
 # Remove bundled clipper
 rm xs/src/clipper.*pp
 %endif
@@ -188,6 +190,7 @@ fi
 %changelog
 * Tue Sep 23 2014 Miro Hrončok <mhroncok@redhat.com> - 1.1.7-1
 - Update to 1.1.7
+- Add patch from Debian to fix debian#757798
 
 * Tue Sep 23 2014 Miro Hrončok <mhroncok@redhat.com> - 1.1.6-4
 - Admesh 0.98.1 compatibility patch

@@ -1,15 +1,12 @@
 Name:           slic3r
 Version:        1.1.7
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
 # Images are CC-BY, code is AGPLv3
 Group:          Applications/Engineering
 URL:            http://slic3r.org/
 Source0:        https://github.com/alexrj/Slic3r/archive/%{version}.tar.gz
-
-# This is waiting for the new release of clipper
-%global         with_clipper 0
 
 # Modify Build.PL so we are able to build this on Fedora
 Patch0:         %{name}-buildpl.patch
@@ -22,11 +19,7 @@ Patch2:         %{name}-english-locale.patch
 Patch3:         %{name}-linker.patch
 Patch4:         %{name}-clear-error.patch
 Patch5:         %{name}-test-out-of-memory.patch
-
-%if %with_clipper
-# Unbundle clipper
 Patch6:         %{name}-clipper.patch
-%endif
 
 Source1:        %{name}.desktop
 Source2:        %{name}.appdata.xml
@@ -60,14 +53,11 @@ BuildRequires:  perl(Wx)
 BuildRequires:  perl(XML::SAX)
 BuildRequires:  perl(XML::SAX::ExpatXS)
 
-%if %with_clipper
-BuildRequires:  polyclipping-devel
-%endif
-
 BuildRequires:  admesh-devel >= 0.98.1
 BuildRequires:  boost-devel
 BuildRequires:  desktop-file-utils
 BuildRequires:  poly2tri-devel
+BuildRequires:  polyclipping-devel >= 6.2.0
 BuildRequires:  ImageMagick
 
 Requires:       perl(XML::SAX)
@@ -89,15 +79,11 @@ for more information.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-
-%if %with_clipper
 %patch6 -p1
-# Remove bundled clipper
-rm xs/src/clipper.*pp
-%endif
 
-# Remove bundled admesh, poly2tri and boost
+# Remove bundled admesh, clipper, poly2tri and boost
 rm -rf xs/src/admesh
+rm xs/src/clipper.*pp
 rm -rf xs/src/poly2tri
 rm -rf xs/src/boost
 
@@ -188,6 +174,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Mon Oct 20 2014 Miro Hrončok <mhroncok@redhat.com> - 1.1.7-2
+- Unbundle polyclipping 6.2.0
+
 * Tue Sep 23 2014 Miro Hrončok <mhroncok@redhat.com> - 1.1.7-1
 - Update to 1.1.7
 - Add patch from Debian to fix debian#757798

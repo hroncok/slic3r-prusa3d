@@ -174,6 +174,9 @@ fi
 - Removed already merged patches
 - Removed unused BRs
 
+* Fri Jun 19 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.1.7-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Mon Jun 08 2015 Jitka Plesnikova <jplesnik@redhat.com> - 1.1.7-4
 - Perl 5.22 rebuild
 

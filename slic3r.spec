@@ -21,7 +21,7 @@ Source1:        %{name}.desktop
 Source2:        %{name}.appdata.xml
 
 BuildRequires:  perl(Class::XSAccessor)
-BuildRequires:  perl(Encode::Locale)
+BuildRequires:  perl(Encode::Locale) >= 1.05
 BuildRequires:  perl(ExtUtils::MakeMaker) >= 6.80
 BuildRequires:  perl(ExtUtils::ParseXS) >= 3.22
 BuildRequires:  perl(ExtUtils::Typemaps::Default) >= 1.05

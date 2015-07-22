@@ -1,6 +1,6 @@
 Name:           slic3r
 Version:        1.2.9
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
 # Images are CC-BY, code is AGPLv3
@@ -169,6 +169,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Wed Jul 22 2015 David Tardon <dtardon@redhat.com> - 1.2.9-2
+- rebuild for Boost 1.58
+
 * Mon Jun 29 2015 Miro Hrončok <mhroncok@redhat.com> - 1.2.9-1
 - New version 1.2.9
 - Removed already merged patches

@@ -1,6 +1,6 @@
 Name:           slic3r
 Version:        1.2.9
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
 # Images are CC-BY, code is AGPLv3
@@ -16,6 +16,14 @@ Patch1:         %{name}-datadir.patch
 Patch2:         %{name}-english-locale.patch
 Patch3:         %{name}-linker.patch
 #Patch4:         %{name}-clipper.patch
+
+# https://bugzilla.redhat.com/show_bug.cgi?id=1306668
+# https://github.com/alexrj/Slic3r/issues/3117#issuecomment-187767676
+Patch5:         %{name}-boost160.patch
+
+# Patch to manually cast too bool, fix FTBFS
+# Will report upstream
+Patch6:         %{name}-boolcast.patch
 
 Source1:        %{name}.desktop
 Source2:        %{name}.appdata.xml
@@ -75,6 +83,8 @@ for more information.
 %patch2 -p1
 %patch3 -p1
 #%%patch4 -p1
+%patch5 -p1
+%patch6 -p1
 
 # Remove bundled admesh, clipper, poly2tri and boost
 rm -rf xs/src/admesh
@@ -169,6 +179,10 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Tue Feb 23 2016 Miro Hrončok <mhroncok@redhat.com> - 1.2.9-6
+- Add patch to fix FTBFS with Boost 1.60 (#1306668)
+- Add patch to manually cast too bool, fix other FTBFS
+
 * Fri Feb 05 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1.2.9-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 

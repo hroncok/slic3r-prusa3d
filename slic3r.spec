@@ -1,6 +1,6 @@
 Name:           slic3r
 Version:        1.2.9
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
 # Images are CC-BY, code is AGPLv3
@@ -179,6 +179,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Mon May 16 2016 Jitka Plesnikova <jplesnik@redhat.com> - 1.2.9-7
+- Perl 5.24 rebuild
+
 * Tue Feb 23 2016 Miro Hrončok <mhroncok@redhat.com> - 1.2.9-6
 - Add patch to fix FTBFS with Boost 1.60 (#1306668)
 - Add patch to manually cast too bool, fix other FTBFS

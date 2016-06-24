@@ -28,6 +28,8 @@ Patch6:         %{name}-boolcast.patch
 Source1:        %{name}.desktop
 Source2:        %{name}.appdata.xml
 
+BuildRequires:  perl-devel
+BuildRequires:  perl-generators
 BuildRequires:  perl(Class::XSAccessor)
 BuildRequires:  perl(Encode::Locale) >= 1.05
 BuildRequires:  perl(ExtUtils::MakeMaker) >= 6.80

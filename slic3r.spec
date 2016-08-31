@@ -1,6 +1,6 @@
 Name:           slic3r
 Version:        1.2.9
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
 # Images are CC-BY, code is AGPLv3
@@ -24,6 +24,10 @@ Patch5:         %{name}-boost160.patch
 # Patch to manually cast too bool, fix FTBFS
 # Will report upstream
 Patch6:         %{name}-boolcast.patch
+
+# https://bugzilla.redhat.com/show_bug.cgi?id=1285807
+# https://github.com/alexrj/Slic3r/commit/1a09ae81db06602050ae83620268efa33ed14da1
+Patch7:         %{name}-wxclose.patch
 
 Source1:        %{name}.desktop
 Source2:        %{name}.appdata.xml
@@ -87,6 +91,7 @@ for more information.
 #%%patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 # Remove bundled admesh, clipper, poly2tri and boost
 rm -rf xs/src/admesh
@@ -181,6 +186,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Wed Aug 31 2016 Miro Hrončok <mhroncok@redhat.com> - 1.2.9-8
+- Fix bug that crashes slic3r when about dialog is opened (#1285807)
+
 * Mon May 16 2016 Jitka Plesnikova <jplesnik@redhat.com> - 1.2.9-7
 - Perl 5.24 rebuild
 

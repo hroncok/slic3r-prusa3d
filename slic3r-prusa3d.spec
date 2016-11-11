@@ -88,6 +88,10 @@ rm -rf xs/src/admesh
 rm -rf xs/src/poly2tri
 rm -rf xs/src/boost
 
+# Fix the version
+sed -i 's/#define SLIC3R_VERSION .*$/#define SLIC3R_VERSION "%{version}"/' xs/src/libslic3r/libslic3r.h
+
+
 #####################
 # Move it to a separate namespace, so it does not conflict with the slic3r package
 mv lib/Slic3r lib/Slic3rPrusa

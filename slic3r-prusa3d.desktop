@@ -1,7 +1,7 @@
 [Desktop Entry]
-Name=Slic3r
-Exec=slic3r
-Icon=slic3r
+Name=Slic3r Prusa Edition
+Exec=slic3r-prusa3d
+Icon=slic3r-prusa3d
 Terminal=false
 Type=Application
 Categories=Graphics;3DGraphics;

@@ -16,7 +16,7 @@ Patch0:         %{orig}-buildpl.patch
 Patch1:         %{orig}-datadir.patch
 Patch2:         %{orig}-english-locale.patch
 Patch3:         %{orig}-linker.patch
-#Patch4:         %{orig}-clipper.patch
+#Patch4:         %%{orig}-clipper.patch
 
 Source1:        %{name}.desktop
 Source2:        %{name}.appdata.xml

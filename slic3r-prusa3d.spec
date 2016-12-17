@@ -102,6 +102,8 @@ rm -rf xs/src/glew
 # Fix the version
 sed -i 's/#define SLIC3R_VERSION .*$/#define SLIC3R_VERSION "%{version}"/' xs/src/libslic3r/libslic3r.h
 
+# Fix the shebang
+sed -i 's|#!/usr/bin/env perl|#!%{__perl}|' %{orig}.pl
 
 #####################
 # Move it to a separate namespace, so it does not conflict with the slic3r package

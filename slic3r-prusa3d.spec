@@ -54,7 +54,7 @@ BuildRequires:  perl(Wx)
 BuildRequires:  perl(XML::SAX)
 BuildRequires:  perl(XML::SAX::ExpatXS)
 
-BuildRequires:  admesh-devel >= 0.98.1
+#BuildRequires:  admesh-devel >= 0.98.1
 BuildRequires:  boost-devel
 BuildRequires:  desktop-file-utils
 BuildRequires:  poly2tri-devel
@@ -63,8 +63,13 @@ BuildRequires:  ImageMagick
 
 Requires:       perl(XML::SAX)
 Requires:       perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
-Requires:       admesh-libs >= 0.98.1
+#Requires:       admesh-libs >= 0.98.1
+
+# Fedora polyclipping version is not compatible
 Provides:       bundled(polyclipping) = 6.2.9
+
+# Upstream has custom patches, reluctant to send to upstream
+Provides:       bundled(admesh-libs) = 0.98.1
 
 
 %description
@@ -83,7 +88,7 @@ for more information.
 #%%patch4 -p1
 
 # Remove bundled admesh, clipper, poly2tri and boost
-rm -rf xs/src/admesh
+#rm -rf xs/src/admesh
 #rm xs/src/clipper.*pp
 rm -rf xs/src/poly2tri
 rm -rf xs/src/boost
@@ -203,6 +208,7 @@ fi
 %changelog
 * Sat Dec 17 2016 Miro Hrončok <mhroncok@redhat.com> - 1.31.6-1
 - Update to 1.31.6
+- Bundle admesh
 
 * Fri Nov 11 2016 Miro Hrončok <mhroncok@redhat.com> - 1.31.4-1
 - New package adapted from the slic3r package

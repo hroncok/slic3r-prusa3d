@@ -6,7 +6,7 @@ index 9accef3..e89fa8b 100644
      }
  }
  
-+push @LIBS, qw(-ladmesh -lpoly2tri);
++push @LIBS, qw(-lpoly2tri);
 +
  my $build = Module::Build::WithXSpp->new(
      module_name     => 'Slic3r::XS',

@@ -1,6 +1,6 @@
 %global orig slic3r
 Name:           %{orig}-prusa3d
-Version:        1.31.4
+Version:        1.31.6
 Release:        1%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
@@ -201,5 +201,8 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Sat Dec 17 2016 Miro Hrončok <mhroncok@redhat.com> - 1.31.6-1
+- Update to 1.31.6
+
 * Fri Nov 11 2016 Miro Hrončok <mhroncok@redhat.com> - 1.31.4-1
 - New package adapted from the slic3r package

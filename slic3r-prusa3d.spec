@@ -90,11 +90,12 @@ for more information.
 %patch3 -p1
 #%%patch4 -p1
 
-# Remove bundled admesh, clipper, poly2tri and boost
+# Remove bundled libs
 #rm -rf xs/src/admesh
 #rm xs/src/clipper.*pp
 rm -rf xs/src/poly2tri
 rm -rf xs/src/boost
+rm -rf xs/src/glew
 
 # Fix the version
 sed -i 's/#define SLIC3R_VERSION .*$/#define SLIC3R_VERSION "%{version}"/' xs/src/libslic3r/libslic3r.h
@@ -213,6 +214,7 @@ fi
 - Update to 1.31.6
 - Bundle admesh
 - Recommend Thread::Queue for faster slicing
+- Unbundle glew
 
 * Fri Nov 11 2016 Miro Hrončok <mhroncok@redhat.com> - 1.31.4-1
 - New package adapted from the slic3r package

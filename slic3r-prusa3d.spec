@@ -74,9 +74,6 @@ Provides:       bundled(polyclipping) = 6.2.9
 # Upstream has custom patches, reluctant to send to upstream
 Provides:       bundled(admesh-libs) = 0.98.1
 
-# TODO: Check if it is patched or not and package it separately if possible
-Provides:       bundled(shinyprofiler) = 0.0
-
 %description
 Slic3r is a G-code generator for 3D printers. It's compatible with RepRaps,
 Makerbots, Ultimakers and many more machines.
@@ -98,6 +95,7 @@ for more information.
 rm -rf xs/src/poly2tri
 rm -rf xs/src/boost
 rm -rf xs/src/glew
+# There is also Shiny, a profiler. But it's basically ifdefed out.
 
 # Fix the version
 sed -i 's/#define SLIC3R_VERSION .*$/#define SLIC3R_VERSION "%{version}"/' xs/src/libslic3r/libslic3r.h
@@ -219,7 +217,6 @@ fi
 - Bundle admesh
 - Recommend Thread::Queue for faster slicing
 - Unbundle glew
-- Mark Shiny as bundled
 
 * Fri Nov 11 2016 Miro Hrončok <mhroncok@redhat.com> - 1.31.4-1
 - New package adapted from the slic3r package

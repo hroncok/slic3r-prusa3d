@@ -65,6 +65,9 @@ Requires:       perl(XML::SAX)
 Requires:       perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
 #Requires:       admesh-libs >= 0.98.1
 
+# For faster slicing
+Recommends:     perl(Thread::Queue)
+
 # Fedora polyclipping version is not compatible
 Provides:       bundled(polyclipping) = 6.2.9
 
@@ -209,6 +212,7 @@ fi
 * Sat Dec 17 2016 Miro Hrončok <mhroncok@redhat.com> - 1.31.6-1
 - Update to 1.31.6
 - Bundle admesh
+- Recommend Thread::Queue for faster slicing
 
 * Fri Nov 11 2016 Miro Hrončok <mhroncok@redhat.com> - 1.31.4-1
 - New package adapted from the slic3r package

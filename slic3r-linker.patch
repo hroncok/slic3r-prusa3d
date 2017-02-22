@@ -1,10 +1,10 @@
 diff --git a/xs/Build.PL b/xs/Build.PL
-index 9accef3..e89fa8b 100644
+index 51d1a01..cc5805b 100644
 --- a/xs/Build.PL
 +++ b/xs/Build.PL
-@@ -202,6 +202,8 @@ if ($cpp_guess->is_gcc) {
-     }
- }
+@@ -219,6 +219,8 @@ print "\n";
+ print 'With @INC: ', join(', ', map "\"$_\"", @INC), "\n";
+ print 'With @LIBS: ', join(', ', map "\"$_\"", @LIBS), "\n";
  
 +push @LIBS, qw(-lpoly2tri);
 +

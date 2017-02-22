@@ -1,6 +1,6 @@
 %global orig slic3r
 Name:           %{orig}-prusa3d
-Version:        1.31.6
+Version:        1.33.8
 Release:        1%{?dist}
 Summary:        G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)
 License:        AGPLv3 and CC-BY
@@ -75,6 +75,9 @@ Provides:       bundled(polyclipping) = 6.2.9
 Provides:       bundled(admesh-libs) = 0.98.1
 
 %description
+This is Slic3r Prusa Edition, a modified version of Slic3r adding more features
+not only useful for the Prusa printers.
+
 Slic3r is a G-code generator for 3D printers. It's compatible with RepRaps,
 Makerbots, Ultimakers and many more machines.
 See the project homepage at slic3r.org and the documentation on the Slic3r wiki
@@ -212,6 +215,10 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Wed Feb 22 2017 Miro Hrončok <mhroncok@redhat.com> - 1.33.8-1
+- Update to 1.33.8
+- Mention it's a fork in the description
+
 * Sat Dec 17 2016 Miro Hrončok <mhroncok@redhat.com> - 1.31.6-1
 - Update to 1.31.6
 - Bundle admesh

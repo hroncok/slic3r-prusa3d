@@ -5,7 +5,7 @@
  <licence>CC-BY</licence>
  <summary>G-code generator for 3D printers</summary>
  <description>
-  <p>Slic3r takes 3D models (STL, OBJ, AMF) and converts them into G-code instructions for 3D printers. It's compatible with any modern printer based on the RepRap toolchain, including all those based on the Marlin, Sprinter and Repetier firmware. It also works with Mach3 and LinuxCNC controllers.</p>
+  <p>Slic3r takes 3D models (STL, OBJ, AMF) and converts them into G-code instructions for 3D printers. It's compatible with any modern printer based on the RepRap toolchain, including all those based on the Marlin, Sprinter and Repetier firmware. It also works with Mach3 and LinuxCNC controllers. This is Slic3r Prusa Edition, a modified version of Slic3r adding more features not only useful for the Prusa printers.</p>
   <p>Key features are:</p>
   <ul>
     <li>additional complete command-line interface to use it with no GUI</li>

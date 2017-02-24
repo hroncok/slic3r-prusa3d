@@ -65,6 +65,8 @@ Requires:       perl(XML::SAX)
 Requires:       perl(:MODULE_COMPAT_%(eval "`perl -V:version`"; echo $version))
 #Requires:       admesh-libs >= 0.98.1
 
+Requires:       hicolor-icon-theme
+
 # For faster slicing
 Recommends:     perl(Thread::Queue)
 
@@ -217,7 +219,8 @@ fi
 %changelog
 * Wed Feb 22 2017 Miro Hrončok <mhroncok@redhat.com> - 1.33.8-1
 - Update to 1.33.8
-- Mention it's a fork in the description
+- Mention it's a fork in the description and appdata file
+- Require hicolor-icon-theme
 
 * Sat Dec 17 2016 Miro Hrončok <mhroncok@redhat.com> - 1.31.6-1
 - Update to 1.31.6
